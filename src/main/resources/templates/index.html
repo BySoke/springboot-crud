@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8">
+    <title>测试页面</title>
+    <link rel="stylesheet" th:href="@{/bootstrap-3.3.7-dist/css/bootstrap.css}"/>
+</head>
+
+<body>
+
+<!--所有页面上你能看到的内容-->
+<div class="container">
+    <div class="form-actions">
+        <form id="form" action="">
+            <table class="table table-hover">
+                <tr>
+                    <td style="float: left">
+                        <label for="name">用户名：</label><input type="text" id="name" name="name" value="">
+                    </td>
+                    <td style="float: right">
+                        <button type="button" class="btn btn-danger" id="btn-search">查找</button>
+                        <button type="button" class="btn btn-danger" id="btn-add">新增</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+        <div>
+            <table class="table" id="table-user">
+
+                <thead>
+                <tr>
+                    <th>用户ID</th>
+                    <th>用户姓名</th>
+                    <th>用户年龄</th>
+                    <th>操作</th>
+                </tr>
+
+                </thead>
+
+
+                <tbody>
+                <tr class="active">
+                    <td>1</td>
+                    <td>a</td>
+                    <td>22</td>
+                    <td>
+                        <button type="button" class="btn btn-primary" id="btn-edit">编辑</button>
+                        <button type="button" class="btn btn-danger" id="btn-del">删除</button>
+                    </td>
+                </tr>
+
+
+                </tbody>
+
+
+            </table>
+        </div>
+        <div id="page">
+            <ul class="pager">
+                <li><a href="#" id="pre">上一页</a></li>
+                <li><a href="#">下一页</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!--这个是第一个个模态框-->
+<div>
+    <div class="modal-dialog">
+        <button class="btn btn-primary btn-lg hidden" data-toggle="modal" data-target="#myModal" id="modal"></button>
+        <!-- 模态框（Modal） -->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+             aria-hidden="true">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        编辑用户
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form id="formUser" action="">
+                        <table class="table" id="table-user-model">
+
+                            <thead>
+                            <tr>
+                                <th>用户ID</th>
+                                <th>用户姓名</th>
+                                <th>用户年龄</th>
+                            </tr>
+
+                            </thead>
+
+                            <tbody>
+                            <tr class="active">
+                                <td><label for="uid">id：</label><input type="text" id="uid" name="uid" value=""
+                                                                       readonly></td>
+                                <td><label for="uname">name：</label><input type="text" id="uname" name="uname" value="">
+                                </td>
+                                <td><label for="uage">age：</label><input type="text" id="uage" name="uage" value="">
+                                </td>
+                            </tr>
+
+                            </tbody>
+
+                        </table>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--这个是第二个个模态框-->
+<div>
+    <div class="modal-dialog">
+        <button class="btn btn-primary btn-lg hidden" data-toggle="modal" data-target="#myModal2" id="modal2"></button>
+        <!-- 模态框（Modal） -->
+        <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2"
+             aria-hidden="true">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel2">
+                        添加
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form id="formUser2" action="">
+                        <table class="table" id="table-user-model2">
+
+                            <thead>
+                            <tr>
+                                <th>用户姓名</th>
+                                <th>用户年龄</th>
+                            </tr>
+
+                            </thead>
+
+                            <tbody>
+                            <tr class="active">
+                                <td>
+                                    <label for="uuname">name：</label><input type="text" id="uuname" name="uuname"
+                                                                            value="">
+                                </td>
+                                <td>
+                                    <label for="uuage">age：</label><input type="text" id="uuage" name="uuage" value="">
+                                </td>
+                            </tr>
+
+                            </tbody>
+
+                        </table>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+
+<script type="text/javascript" th:src="@{/bootstrap-3.3.7-dist/js/jquery-3.5.1.js}"></script>
+<script type="text/javascript" th:src="@{/bootstrap-3.3.7-dist/js/bootstrap.js}"></script>
+<script type="text/javascript">
+
+    var pageNo, pageSize;
+
+    /*
+    * 渲染完 DOM 树：https://blog.csdn.net/u011033906/article/details/98043369
+    */
+    $(function () {
+
+        //初始化页面的
+        initPage();
+
+        //模态框一：点击保存按钮之后发生了什么事情，对应保存按钮点击事件
+        $('#myModal').on('hide.bs.modal', function () {
+            var id = $("#uid").val();
+            var name = $("#uname").val();
+            var age = $("#uage").val();
+            $.ajax({
+                url: "user/updateUser",
+                type: "post",
+                data: {
+                    "id": id,
+                    "name": name,
+                    "age": age
+                },
+                dataType: "json",
+                success: function (result) {
+                    if (result.code == 200) {
+                        initPage();
+                        alert("更新成功")
+                    }
+                },
+                error: function () {
+                    alert("error");
+                }
+            });
+        });
+
+        $('#myModal2').on('hide.bs.modal', function () {
+            debugger
+            var name = $("#uuname").val();
+            var age = $("#uuage").val();
+            $.ajax({
+                url: 'user/addUser',
+                type: "post",
+                data: {
+                    "name": name,
+                    "age": age
+                },
+                dataType: "json",
+                success: function (result) {
+                    if (result.code === 200) {
+                        alert("添加成功");
+                        initPage();
+                    }
+                },
+                error: function () {
+                    alert("error");
+                }
+            });
+        });
+    });
+
+    function initPage(pageNo, pageSize, name) {
+        debugger
+        if (name != null && name != undefined) {
+            $.ajax({
+                url: 'user/searchUser',
+                type: "post",
+                dataType: "json",
+                data: {
+                    name: name,
+                    pageNo: pageNo,
+                    pageSize: pageSize
+                },
+                success: function (result) {
+                    if (result.code === 200) {
+                        contentInfoList(result);
+                        pageInfoAppend(result);
+                    }
+                },
+                error: function () {
+                    alert("error");
+                }
+            });
+        } else {
+            $.ajax({
+                url: 'user/searchAllUser',
+                type: "post",
+                dataType: "json",
+                data: {
+                    pageNo: pageNo,
+                    pageSize: pageSize
+                },
+                success: function (result) {
+                    if (result.code === 200) {
+                        contentInfoList(result);
+                        pageInfoAppend(result);
+                    }
+                },
+                error: function () {
+                    alert("error");
+                }
+            });
+        }
+    }
+
+    $("#btn-search").click(function () {
+        var name = $("#name").val();
+        $.ajax({
+            url: 'user/searchUser',
+            type: "post",
+            data: {
+                "name": name
+            },
+            dataType: "json",
+            success: function (result) {
+                if (result.code === 200) {
+                    contentInfoList(result);
+                    pageInfoAppend(result,name);
+                }
+            },
+            error: function () {
+                alert("error");
+            }
+        });
+    });
+
+    //jquery
+    $("#btn-add").click(function () {
+        $("#modal2").click();
+    });
+
+    $(document).on("click", ".edit-btn", function () {
+        var uid = $(this).attr('edit-id');
+        console.log(uid);
+        $.ajax({
+            url: "user/editUser/" + uid,
+            type: "post",
+            success: function (result) {
+                $("#modal").click();
+                $("#uid").val(result.extend.user.id);
+                $("#uname").val(result.extend.user.name);
+                $("#uage").val(result.extend.user.age);
+            }
+        });
+    })
+
+    //javascript
+    $(document).on("click", ".del-btn", function () {
+        var uid = $(this).attr('del-id');
+        console.log(uid);
+        $.ajax({
+            url: "user/delUser/" + uid,
+            type: "post",
+            success: function (result) {
+                if (result.code === 200) {
+                    alert("删除成功");
+                    initPage();
+                }
+            },
+            error: function () {
+                alert("error");
+            }
+        });
+    })
+
+    function pageInfoAppend(result,name) {
+        debugger
+        pageNo = result.extend.userList.number;
+        pageSize = result.extend.userList.size;
+
+
+        $("#page").empty();
+        var ul = $("<ul></ul>").addClass("pager");
+        var prePageLi = $("<li></li>").append($("<a href='javascript:void(0);'></a>").append("上一页"));
+        if (result.extend.userList.first == true) {
+            prePageLi.addClass("disabled");
+        }
+        prePageLi.click(function () {
+            initPage(pageNo - 1, pageSize, name);
+        });
+
+        var nextPageLi = $("<li></li>").append($("<a href='javascript:void(0);'></a>").append("下一页"));
+        if (result.extend.userList.last == true) {
+            nextPageLi.addClass("disabled");
+        }
+        nextPageLi.click(function () {
+            initPage(pageNo + 1, pageSize, name);
+        });
+
+        ul.append(prePageLi).append(nextPageLi).appendTo("#page");
+    }
+
+    function contentInfoList(result) {
+        $("#table-user tbody").empty();
+        /**
+         <tr class="active">
+         <td>1</td>
+         <td>a</td>
+         <td>22</td>
+         <td>
+         <button type="button" class="btn btn-primary" id="btn-edit">编辑</button>
+         <button type="button" class="btn btn-danger" id="btn-del">删除</button>
+         </td>
+         </tr>
+         */
+
+        debugger
+        var userList = result.extend.userList.content;
+        $.each(userList, function (index, item) {
+            var id = $("<td></td>").append(item.id);
+            var name = $("<td></td>").append(item.name);
+            var age = $("<td></td>").append(item.age);
+            var editBtn = $("<button type='button'></button>").addClass("btn edit-btn btn-primary").append("编辑");
+            editBtn.attr("edit-id", item.id);
+
+            var delBtn = $("<button type='button'</button>").addClass("btn del-btn btn-danger").append("删除");
+            delBtn.attr("del-id", item.id);
+
+            var btnTd = $("<td></td>").append(editBtn).append("&nbsp;").append(delBtn);
+            $("<tr></tr>").append(id).append(name).append(age).append(btnTd).appendTo("#table-user tbody");
+        });
+    }
+
+
+</script>
+
+</html>
