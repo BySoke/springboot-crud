@@ -56,8 +56,6 @@ public class UserController {
         Page<User> userList = userService.getAllPageUserInfo(pageable);
 
         return Msg.success().add("userList", userList);
-        /*List<User> userList = userService.getAllUserInfo();
-        return Msg.success().add("userList", userList);*/
     }
 
     /**
